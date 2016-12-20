@@ -57,11 +57,26 @@ public class Loader
         for(int i = 1; i< friendsArray.length; i++) //zaczynamy od i=1, bo w friendsArray[0] są smieci
         {
             String [] tab = friendsArray[i].split("<");
-            friendsArray[i] = tab[0];
+            friendsArray[i] = tab[0]; //tu juz znajduje sie wyłuskane imie i nazwisko
+
+                if( friendsArray[i].contains(".")) //sprawdzamy, czy imie uzytkownika nie zawiera adresu e-mail, jesli tak to go usuwamy
+                {
+                    String noEmail [] =  friendsArray[i].split(" ");
+                    int l = noEmail.length;
+
+                    friendsArray[i]="";
+                    for (int j = 0; j<l-1; j++)
+                        friendsArray[i]+=noEmail[j]+" ";
+                }
+
+            friendsArray[i].trim();
+
         }
 
         ObservableList<String> friendsList = FXCollections.observableArrayList(friendsArray); //factory method
          friendsList.remove(0); //w tablicy friendsArray na pozycji 0 znajdowały się śmieci - nie potrzebujemy ich w naszej liście
+
+
         friendsList.add("-- Wszyscy --");
 
         return friendsList;

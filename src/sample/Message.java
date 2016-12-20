@@ -116,9 +116,8 @@ public class Message //represents one message
         end = msg.indexOf("</p>", start);
         content = msg.substring(start + 3, end); //start+"<p>".length(), bo bez tego na poczatku wiadomosci było <p>
 
-
-        toString();
-
+        user.trim();
+        content.trim();
 
     }
 

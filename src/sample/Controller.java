@@ -53,6 +53,7 @@ public class Controller implements Initializable
 
         Thread findMessages = new Thread(() ->        //asynchronicznie wczytujemy wiadomości (nie zamraża to naszej aplikacji)
         {
+            contactsComboBox.setDisable(true);//blokujemy wybór osoby
 
 
                 if(!messagesLoaded) //tylko raz ładujemy wiadomości
@@ -69,28 +70,41 @@ public class Controller implements Initializable
                     messagesLoaded = true;
                 }
 
+                Collections.reverse(allMessages); //wiadomości są dymyślnie w kolejności majelącej
                 }
 
 
 
-                Collections.reverse(allMessages); //wiadomości są dymyślnie w kolejności majelącej
-                String temp = "";
-//                for(Message m : allMessages)
-//                {
-//                    temp += m.toString() + "\n";
-//                }
+
+            filteredMessages.clear();
 
             for(Message m : allMessages)
             {
-                if(m.getUser() == "-- Wszyscy --")
+                if(contactsComboBox.getValue().toString().equals("-- Wszyscy --"))
                 {
-                    //Wyświetl wszystkich
-                    filteredMessages.add(m);
+                    if(linkCheckBox.isSelected()) //sprawdzamy, czy trzeba szukac linkow
+                    {
+                        if(m.getContent().toString().matches("[-a-zA-Z0-9+&@#/%?=~_|!:,;]+(\\.)[-a-zA-Z0-9+&@#/%?=~_|!:,;]+")) //jesli jest link, to dodajemy do listy
+                        filteredMessages.add(m);
+                    }
+                    else
+                        filteredMessages.add(m);
                 }
                 else
                 {
-                    if(m.getUser() == contactsComboBox.getValue())
-                        filteredMessages.add(m);
+                   // String xyz = m.getUser();
+                   // String zyx = contactsComboBox.getValue().toString();
+                    if(m.getUser().equals(contactsComboBox.getValue().toString().trim())) //trim jest po to, bo getValue pobierało wartośc ze znakiem białym na końcu
+                    {
+                        if(linkCheckBox.isSelected()) //sprawdzamy, czy trzeba szukac linkow
+                        {
+                            if(m.getContent().toString().matches("[-a-zA-Z0-9+&@#/%?=~_|!:,;]+(\\.)[-a-zA-Z0-9+&@#/%?=~_|!:,;]+")) //jesli jest link, to dodajemy do listy
+                                filteredMessages.add(m);
+                        }
+                        else
+                            filteredMessages.add(m);
+                    }
+
 
                 }
             }
@@ -99,21 +113,27 @@ public class Controller implements Initializable
             {
                 for(Message m : filteredMessages)
                 {
-                   if(m.getContent().matches("[-a-zA-Z0-9+&@#/%?=~_|!:,;]+(\\.)[-a-zA-Z0-9+&@#/%?=~_|!:,;]+"))
-                    temp+= m.toString() + "\n";
-                    filteredMessages.add(m);
+                   if(!m.getContent().toString().matches("[-a-zA-Z0-9+&@#/%?=~_|!:,;]+(\\.)[-a-zA-Z0-9+&@#/%?=~_|!:,;]+")) //jesli nie ma linku to usuwamy z listy
+                   {
+                       filteredMessages.remove(m);
+                   }
+
                 }
             }
+
+            String temp = "";
+            if(filteredMessages.isEmpty())
+                txtArea.setText("Nie znaleziono takich wiadomości.");
             else
             {
                 for(Message m : filteredMessages)
-                {
-                    temp += m.toString() + "\n";
-                }
+                    temp+= m.toString() + "\n";
+
+                txtArea.setText(temp);
             }
 
 
-                txtArea.setText(temp);
+
 
         });
 
@@ -121,7 +141,7 @@ public class Controller implements Initializable
 
         String processingMessage = "Processing";
         boolean firstLoop = true;
-        while (findMessages.isAlive()) //animacja w konsolo
+        while (findMessages.isAlive()) //animacja w konsoli
         {
             try
             {
@@ -145,6 +165,7 @@ public class Controller implements Initializable
 
         }
 
+        contactsComboBox.setDisable(false); //odblokowujemy wybór osoby
 
 
 
@@ -157,6 +178,7 @@ public class Controller implements Initializable
         ObservableList<String> friends = Loader.loadContacts();
         Collections.sort(friends);
         contactsComboBox.setItems(friends);
+        contactsComboBox.getSelectionModel().select("Kasia Blanka Motyka");
 
     }
 
