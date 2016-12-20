@@ -62,6 +62,7 @@ public class Loader
 
         ObservableList<String> friendsList = FXCollections.observableArrayList(friendsArray); //factory method
          friendsList.remove(0); //w tablicy friendsArray na pozycji 0 znajdowały się śmieci - nie potrzebujemy ich w naszej liście
+        friendsList.add("-- Wszyscy --");
 
         return friendsList;
 
@@ -174,20 +175,21 @@ public class Loader
                 int msgEnd = 0;
                 int previousMsgEnd = 0;
 
-                while(msgEnd < currentLine.length() && licznik<2000)
+                while(msgEnd < currentLine.length() && msgEnd!=-1 && licznik<2000)//msgEnd=-1 means that we reached end of current line
                 {
                     previousMsgEnd = msgEnd;
                     msgStart = currentLine.indexOf("<div class=\"message\">", msgEnd);
 
                     msgEnd = currentLine.indexOf("</p>", msgStart);
-                    if(msgEnd != -1 && msgStart!=1)
+                    if(msgEnd != -1 && msgStart!=-1)
                     {
                         oneMessage = currentLine.substring(msgStart,msgEnd + 4);
                     }
                     else
                     {
                         oneMessage = "1q2w3eazsxdc"; //this code at beginnigs means that this message is not complete
-                        oneMessage.concat(currentLine.substring(previousMsgEnd, currentLine.length()));
+                        oneMessage+=(currentLine.substring(previousMsgEnd, currentLine.length()));
+                        //System.out.println(oneMessage);
                     }
 
                     try
