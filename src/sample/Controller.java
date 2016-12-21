@@ -7,8 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import sun.misc.IOUtils;
@@ -22,8 +21,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import javafx.scene.control.TextArea;
 
 
 public class Controller implements Initializable
@@ -39,6 +36,11 @@ public class Controller implements Initializable
     public TextArea txtArea;
     public ComboBox contactsComboBox;
     public CheckBox linkCheckBox;
+    public TableColumn personTable;
+    public TableColumn dateTable;
+    public TableColumn messageTable;
+
+
 
     @Override
     public void initialize(URL fxmlFileLocation, ResourceBundle resources)
@@ -88,7 +90,9 @@ public class Controller implements Initializable
                         filteredMessages.add(m);
                     }
                     else
+                    {
                         filteredMessages.add(m);
+                    }
                 }
                 else
                 {
@@ -102,7 +106,11 @@ public class Controller implements Initializable
                                 filteredMessages.add(m);
                         }
                         else
+                        {
                             filteredMessages.add(m);
+                            filteredMessages.add(allMessages.get(allMessages.indexOf(m) + 1)); //dodajemy kolejną wiadomość, zeby utworzyć konwersację
+                            //TODO: W obecnej konfiguracji przyjmujemy, że nie użytkownik, lecz druga osoba zaczyna rozmowę (pierwsza wiadomość od usera jest pomijana)
+                        }
                     }
 
 
@@ -127,9 +135,13 @@ public class Controller implements Initializable
             else
             {
                 for(Message m : filteredMessages)
-                    temp+= m.toString() + "\n";
+                {
+                    txtArea.appendText(m.toString() + "\n");
 
-                txtArea.setText(temp);
+                }
+                   // temp+= m.toString() + "\n";
+
+               // txtArea.setText(temp);
             }
 
 

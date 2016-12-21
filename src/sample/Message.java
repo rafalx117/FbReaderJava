@@ -124,6 +124,8 @@ public class Message //represents one message
     @Override
     public String toString()
     {
-        return user.toString() + " " + date.toString() + " " + content.toString();
+        String format = "%1$-20s %2$-40s";
+        String msg = String.format(format, user.toString() + " " + date.getDay()  + " "  + date.getMonth() + " " + date.getYear()+ " " + date.getHours() + ":" + date.getMinutes()+ ":" + date.getSeconds() , content.toString());
+        return msg;
     }
 }
